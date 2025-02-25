@@ -9,7 +9,7 @@ export const Route = createFileRoute('/post/$postId')({
     return { post }
   },
   onError: () => {
-    return notFound()
+    throw notFound()
   },
 })
 
