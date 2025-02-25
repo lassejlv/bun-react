@@ -1,4 +1,4 @@
-import { serve } from 'bun'
+import { env, serve } from 'bun'
 import { db } from 'drizzle'
 import { err, json } from './helpers/http'
 import index from './index.html'
@@ -50,7 +50,7 @@ const server = serve({
     },
   },
 
-  development: process.env.NODE_ENV !== 'production',
+  development: env.NODE_ENV !== 'production',
 })
 
 console.log(`🚀 Server running at ${server.url}`)
