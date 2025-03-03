@@ -2,10 +2,10 @@ import { api } from '@/lib/api'
 import { createFileRoute, notFound } from '@tanstack/react-router'
 import type { SelectPost } from 'drizzle/schema'
 
-export const Route = createFileRoute('/post/$postId')({
+export const Route = createFileRoute('/post/$slug')({
   component: RouteComponent,
   loader: async ({ params }) => {
-    const post = await api.get(`/api/posts/${params.postId}`).json<SelectPost>()
+    const post = await api.get(`/api/posts/${params.slug}`).json<SelectPost>()
     return { post }
   },
   onError: () => {

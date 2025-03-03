@@ -34,13 +34,15 @@ const server = serve({
             title: parsed.data.title,
             content: parsed.data.content,
           })
-          .returning({ id: post.id })
+          .returning({ slug: post.slug })
 
         return json({ message: 'Your post was created', data: new_post[0] })
       },
     },
-    '/api/posts/:postId': async (req) => {
-      const post_data = await db.query.post.findFirst({ where: eq(post.id, req.params.postId) })
+    '/api/posts/:slug': async (req) => {
+      const post_data = await db.query.post.findFirst({
+        where: eq(post.slug, req.params.slug),
+      })
 
       if (!post_data) {
         return err('Post not found', 404)

@@ -22,10 +22,10 @@ function RouteComponent() {
 
   const CreatePost = useMutation({
     mutationFn: async (data: any) => {
-      return await api.post('/api/posts', { json: data }).json<{ message: string; data: { id: string } }>()
+      return await api.post('/api/posts', { json: data }).json<{ message: string; data: { slug: string } }>()
     },
     onSuccess: (data) => {
-      router.navigate({ to: '/post/$postId', params: { postId: data.data.id } })
+      router.navigate({ to: '/post/$slug', params: { slug: data.data.slug } })
       toast.success(data.message)
     },
     onError: (error) => {
@@ -65,7 +65,7 @@ function RouteComponent() {
                     <p>{post.content}</p>
                   </CardContent>
                   <CardFooter>
-                    <Link to='/post/$postId' params={{ postId: post.id }}>
+                    <Link to='/post/$slug' params={{ slug: post.slug }}>
                       <Button>Read more</Button>
                     </Link>
                   </CardFooter>
