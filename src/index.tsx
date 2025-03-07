@@ -27,10 +27,20 @@ const server = serve({
           return json({ message: 'Invalid request body' }, 400)
         }
 
+        const slug = parsed.data.title.toLowerCase().replace(/\s/g, '-')
+
+        const slug_in_use = await db.query.post.findFirst({
+          where: eq(post.slug, slug),
+        })
+
+        if (slug_in_use) {
+          return err('Slug already in use', 400)
+        }
+
         const new_post = await db
           .insert(post)
           .values({
-            slug: parsed.data.title.toLowerCase().replace(/\s/g, '-'),
+            slug,
             title: parsed.data.title,
             content: parsed.data.content,
           })
