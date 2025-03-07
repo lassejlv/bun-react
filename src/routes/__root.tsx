@@ -15,7 +15,7 @@ function Root() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Toaster position='bottom-center' />
+      <Toaster position='bottom-center' visibleToasts={1} />
       <Outlet />
     </QueryClientProvider>
   )
