@@ -39,16 +39,31 @@ const server = serve({
         return json({ message: 'Your post was created', data: new_post[0] })
       },
     },
-    '/api/posts/:slug': async (req) => {
-      const post_data = await db.query.post.findFirst({
-        where: eq(post.slug, req.params.slug),
-      })
+    '/api/posts/:slug': {
+      GET: async (req) => {
+        const post_data = await db.query.post.findFirst({
+          where: eq(post.slug, req.params.slug),
+        })
 
-      if (!post_data) {
-        return err('Post not found', 404)
-      }
+        if (!post_data) {
+          return err('Post not found', 404)
+        }
 
-      return json(post_data)
+        return json(post_data)
+      },
+      DELETE: async (req) => {
+        const post_data = await db.query.post.findFirst({
+          where: eq(post.slug, req.params.slug),
+        })
+
+        if (!post_data) {
+          return err('Post not found', 404)
+        }
+
+        await db.delete(post).where(eq(post.slug, req.params.slug))
+
+        return json({ message: 'Your post was deleted' })
+      },
     },
   },
 
