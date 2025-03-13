@@ -1,14 +1,20 @@
-import { env, serve } from 'bun'
+import { env, password, serve } from 'bun'
 import { db } from 'drizzle'
 import { err, json } from './helpers/http'
-import index from './index.html'
 import { z } from 'zod'
 import { eq } from 'drizzle-orm'
-import { post } from 'drizzle/schema'
+import { post, user } from 'drizzle/schema'
+import index from './index.html'
 
 const PostSchema = z.object({
   title: z.string().min(5).max(150),
   content: z.string().min(5).max(3000),
+})
+
+const AuthSchema = z.object({
+  name: z.string().min(5).max(50),
+  email: z.string().email(),
+  password: z.string().min(8).max(50),
 })
 
 const server = serve({
@@ -73,6 +79,30 @@ const server = serve({
         await db.delete(post).where(eq(post.slug, req.params.slug))
 
         return json({ message: 'Your post was deleted' })
+      },
+    },
+    '/api/auth/register': {
+      POST: async (req) => {
+        const body = await req.json()
+
+        const parsed = AuthSchema.safeParse(body)
+        if (!parsed.success) {
+          return json({ message: 'Invalid request body' }, 400)
+        }
+
+        const user_in_use = await db.query.user.findFirst({ where: eq(user.email, parsed.data.email) })
+
+        if (user_in_use) {
+          return err('Email already in use', 400)
+        }
+
+        await db.insert(user).values({
+          name: parsed.data.name,
+          email: parsed.data.email,
+          password_hash: await password.hash(parsed.data.password),
+        })
+
+        return json({ message: 'Your account was created' })
       },
     },
   },

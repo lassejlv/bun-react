@@ -15,4 +15,16 @@ export const post = sqliteTable('posts', () => ({
 }))
 
 export type SelectPost = typeof post.$inferSelect
-export type InsertPost = typeof post.$inferInsert
+
+export const user = sqliteTable('users', () => ({
+  id: text()
+    .primaryKey()
+    .$defaultFn(() => Bun.randomUUIDv7()),
+  name: text().notNull(),
+  email: text().notNull().unique(),
+  password_hash: text().notNull(),
+  createdAt: text().notNull().$defaultFn(generateDate),
+  updatedAt: text().notNull().$defaultFn(generateDate).$onUpdateFn(generateDate),
+}))
+
+export type SelectUser = typeof user.$inferSelect

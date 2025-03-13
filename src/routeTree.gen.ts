@@ -11,10 +11,17 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as RegisterImport } from './routes/register'
 import { Route as IndexImport } from './routes/index'
 import { Route as PostSlugImport } from './routes/post/$slug'
 
 // Create/Update Routes
+
+const RegisterRoute = RegisterImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
@@ -39,6 +46,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterImport
+      parentRoute: typeof rootRoute
+    }
     '/post/$slug': {
       id: '/post/$slug'
       path: '/post/$slug'
@@ -53,36 +67,41 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/register': typeof RegisterRoute
   '/post/$slug': typeof PostSlugRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/register': typeof RegisterRoute
   '/post/$slug': typeof PostSlugRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/register': typeof RegisterRoute
   '/post/$slug': typeof PostSlugRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/post/$slug'
+  fullPaths: '/' | '/register' | '/post/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/post/$slug'
-  id: '__root__' | '/' | '/post/$slug'
+  to: '/' | '/register' | '/post/$slug'
+  id: '__root__' | '/' | '/register' | '/post/$slug'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  RegisterRoute: typeof RegisterRoute
   PostSlugRoute: typeof PostSlugRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  RegisterRoute: RegisterRoute,
   PostSlugRoute: PostSlugRoute,
 }
 
@@ -97,11 +116,15 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/register",
         "/post/$slug"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/register": {
+      "filePath": "register.tsx"
     },
     "/post/$slug": {
       "filePath": "post/$slug.tsx"
