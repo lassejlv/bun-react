@@ -24,7 +24,7 @@ const server = serve({
 
     // Post routes
     '/api/posts': {
-      GET: async () => json(await db.query.post.findMany()),
+      GET: async () => json(await db.query.post.findMany({ limit: 50 })),
       POST: async (req) => {
         const body = await req.json()
 
